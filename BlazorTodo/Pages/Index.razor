@@ -1,0 +1,39 @@
+﻿@page "/"
+@using BlazorTodo.Pages.Components
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage BrowserStorage
+
+<h3>Todo list!</h3>
+<TodoList Todos="@todos"></TodoList>
+<input id="todoTitle" style="text" @bind="@todoTitle" />
+<button @onclick=AddTodo>Add Todo</button>
+<button>Clear Todo</button>
+<lable>0 todos left</lable>
+
+@code {
+    private List<TodoModel> todos = new List<TodoModel>();
+
+	private string? todoTitle { get; set; }
+	const string LOCAL_STORAGE_TODOS  = "todoList.todos";
+
+	 protected  override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await GetStoredTodos();
+            StateHasChanged();
+		}
+	}
+
+	async Task AddTodo()
+	{
+		if (!string.IsNullOrWhiteSpace(todoTitle)) {
+			todos.Add(todoTitle);
+			await localStorage.SetItemAsync(LOCAL_STORAGE_TODOS, todos);
+		}
+		todoTitle = null;
+	}
+
+    public async Task GetStoredTodos() => todos.AddRange(await localStorage.GetItemAsync<List<TodoModel>>(LOCAL_STORAGE_TODOS) ?? new List<TodoModel>());
+}

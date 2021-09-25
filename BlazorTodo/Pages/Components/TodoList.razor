@@ -1,0 +1,11 @@
+﻿@using BlazorTodo.Models
+
+<ui>
+@foreach(var todo in Todos) {
+	<li>@todo</li>
+}
+</ui>
+@code {
+	[Parameter]
+	public List<TodoModel> Todos { get; set; } 
+}
