@@ -1,6 +1,6 @@
-/BlazorTodo/bin/
-/BlazorTodo/obj/
-.vs/BlazorTodo/v17/.suo
+/BlazorTodo/bin/*
+/BlazorTodo/obj/*
+.vs/BlazorTodo/v17/*.suo
 BlazorTodo/bin/Debug/net6.0/BlazorTodo.dll
 BlazorTodo/bin/Debug/net6.0/BlazorTodo.pdb
 BlazorTodo/bin/Debug/net6.0/ref/BlazorTodo.dll
@@ -21,3 +21,5 @@ BlazorTodo/obj/Debug/net6.0/BlazorTodo.dll
 BlazorTodo/obj/Debug/net6.0/BlazorTodo.pdb
 BlazorTodo/obj/Debug/net6.0/project.razor.json
 BlazorTodo/obj/Debug/net6.0/ref/BlazorTodo.dll
+*.pdb
+*.dll

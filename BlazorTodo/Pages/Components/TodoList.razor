@@ -4,12 +4,12 @@
 @foreach(var todo in Todos) {
 	<li class="list-group-item btn text-start" @onclick="@(() => OnClick.InvokeAsync(@todo))">
 	 <div>
-            @if(todo.Completed.HasValue && !todo.Completed.Value) {<i class="far fa-square" style={{color: "lightblue"}}></i>  }
-            @if(todo.Completed.HasValue && todo.Completed.Value) {<i class="fas fa-check" style={{color: "lightgreen"}}></i> }
+            @if(!todo.Completed) {<i class="far fa-square" style="color:lightblue;"></i>  }
+            @if(todo.Completed) {<i class="fas fa-check" style="color:lightgreen;"></i> }
         &nbsp;
         <span className="label label-success">
-             @if(todo.Completed.HasValue && !todo.Completed.Value) { <span>@todo.Name</span> }
-             @if(todo.Completed.HasValue && todo.Completed.Value) { <s>@todo.Name</s> }
+             @if(!todo.Completed) { <span>@todo.Name</span> }
+             @if(todo.Completed) { <s>@todo.Name</s> }
         </span>
         </div>	
 	
@@ -17,8 +17,19 @@
 }
 </ui>
 @code {
-	[Parameter]
-	public List<TodoModel> Todos { get; set; } 
+    [Parameter]
+    public List<TodoModel> Todos { get; set; }
 
-	 [Parameter] public EventCallback<TodoModel> OnClick { get; set; }
+    public TodoList()
+    {
+        Todos = new List<TodoModel>();
+
+    }
+
+    public TodoList(List<TodoModel> todos)
+    {
+        Todos = todos;
+    }
+
+    [Parameter] public EventCallback<TodoModel> OnClick { get; set; }
 }

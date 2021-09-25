@@ -4,6 +4,8 @@
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedLocalStorage BrowserStorage
+@using BlazorTodo.Services.Interface
+@inject BlazorTodo.Services.Interface.ITodoService _todoService
 
    <div class="col-md-6">
       <div class="row">
@@ -40,49 +42,32 @@
 
 	private string? todoTitle { get; set; }
 	const string LOCAL_STORAGE_TODOS  = "todoList.todos";
+	
 
 	 protected  override async Task OnAfterRenderAsync(bool firstRender)
 	{
 		if (firstRender)
 		{
-			await GetStoredTodos();
+			todos = await _todoService.GetStoredTodos();
             StateHasChanged();
 		}
 	}
 
 	async Task AddTodo()
 	{
-		if (!string.IsNullOrWhiteSpace(todoTitle)) {
-			todos.Add(new TodoModel {
-					ID = Guid.NewGuid(),
-					Name = todoTitle,
-					Completed = false
-				});
-			await SetTodos(todos);
-		}
+		todos = await _todoService.AddTodo(todoTitle);
 		todoTitle = null;
+		StateHasChanged();
 	}
 
-	public async Task SetTodos(List<TodoModel> todos)
+	public async void ToggleTodoCompleted(TodoModel todo)
 	{
-		await localStorage.SetItemAsync(LOCAL_STORAGE_TODOS, todos);
-	}
-
-    public async Task GetStoredTodos() => todos.AddRange(await localStorage.GetItemAsync<List<TodoModel>>(LOCAL_STORAGE_TODOS) ?? new List<TodoModel>());
-
-	public void ToggleTodoCompleted(TodoModel todo)
-    {
-		if (todos.Any())
-		{
-			todos.FirstOrDefault(x => x.ID == todo.ID).Completed = !todo.Completed;
-			SetTodos(todos);
-			StateHasChanged();
-		}
+		todos = await _todoService.ToggleTodoCompleted(todo);
+		StateHasChanged();
 	}
 
 	public async Task ClearCompletedTodos() {
-		todos = todos.Where(x => x.Completed.HasValue == true && x.Completed.Value == false).ToList();
-		await SetTodos(todos);
+		todos = await _todoService.ClearCompletedTodos();
 		StateHasChanged();
 	}
 }

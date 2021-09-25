@@ -1,5 +1,6 @@
 using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components;
+using BlazorTodo.Services.Interface;
+using BlazorTodo.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddScoped<ITodoService, TodoService>();
 
 var app = builder.Build();
 
