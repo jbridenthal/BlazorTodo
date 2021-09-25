@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using BlazorTodo.Models
 @using BlazorTodo.Pages.Components
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
@@ -29,7 +30,11 @@
 	async Task AddTodo()
 	{
 		if (!string.IsNullOrWhiteSpace(todoTitle)) {
-			todos.Add(todoTitle);
+			todos.Add(new TodoModel {
+					ID = Guid.NewGuid(),
+					Name = todoTitle,
+					Completed = false
+				});
 			await localStorage.SetItemAsync(LOCAL_STORAGE_TODOS, todos);
 		}
 		todoTitle = null;
