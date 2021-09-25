@@ -1,11 +1,24 @@
 ﻿@using BlazorTodo.Models
 
-<ui>
+<ui >
 @foreach(var todo in Todos) {
-	<li>@todo.Name</li>
+	<li class="list-group-item btn text-start" @onclick="@(() => OnClick.InvokeAsync(@todo))">
+	 <div>
+            @if(todo.Completed.HasValue && !todo.Completed.Value) {<i class="far fa-square" style={{color: "lightblue"}}></i>  }
+            @if(todo.Completed.HasValue && todo.Completed.Value) {<i class="fas fa-check" style={{color: "lightgreen"}}></i> }
+        &nbsp;
+        <span className="label label-success">
+             @if(todo.Completed.HasValue && !todo.Completed.Value) { <span>@todo.Name</span> }
+             @if(todo.Completed.HasValue && todo.Completed.Value) { <s>@todo.Name</s> }
+        </span>
+        </div>	
+	
+	</li>
 }
 </ui>
 @code {
 	[Parameter]
 	public List<TodoModel> Todos { get; set; } 
+
+	 [Parameter] public EventCallback<TodoModel> OnClick { get; set; }
 }

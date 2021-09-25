@@ -5,15 +5,38 @@
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedLocalStorage BrowserStorage
 
-<h3>Todo list!</h3>
-<TodoList Todos="@todos"></TodoList>
-<input id="todoTitle" style="text" @bind="@todoTitle" />
-<button @onclick=AddTodo>Add Todo</button>
-<button>Clear Todo</button>
-<lable>0 todos left</lable>
+   <div class="col-md-6">
+      <div class="row">
+        <div class="col">
+          <h3 class="text-lg-center">To Do List!</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+			<TodoList Todos="@todos" OnClick="@ClickHandler"></TodoList>
+		</div>
+			</div>
+			<div class="row p-1">
+			<div class="col">
+				<div class="form-floating p-1">
+					<input id="todoTitle" type="text" placeholder="Todo title" class="form-control"  @bind="@todoTitle" />
+					<label for="todoTitle">Todo title</label>
+				</div>
+			</div>
+			<div class="col d-inline-flex ">    
+				<button class="btn btn-primary btn-block p-2" @onclick=AddTodo>Add Todo</button>
+				<button class="btn btn-primary btn-block p-2">Clear Todo</button>
+			</div>
+      </div>
+      <div class="row">
+        <div class="col">
+			<h5 class="text-lg-left p-1 ">@todos.Count(x=>x.Completed == false) todos left</h5>
+          </div>
+      </div>
+    </div>
 
 @code {
-    private List<TodoModel> todos = new List<TodoModel>();
+	private List<TodoModel> todos = new List<TodoModel>();
 
 	private string? todoTitle { get; set; }
 	const string LOCAL_STORAGE_TODOS  = "todoList.todos";
@@ -35,10 +58,25 @@
 					Name = todoTitle,
 					Completed = false
 				});
-			await localStorage.SetItemAsync(LOCAL_STORAGE_TODOS, todos);
+			await SetTodos(todos);
 		}
 		todoTitle = null;
 	}
 
+	public async Task SetTodos(List<TodoModel> todos)
+	{
+		await localStorage.SetItemAsync(LOCAL_STORAGE_TODOS, todos);
+	}
+
     public async Task GetStoredTodos() => todos.AddRange(await localStorage.GetItemAsync<List<TodoModel>>(LOCAL_STORAGE_TODOS) ?? new List<TodoModel>());
+
+	public void ClickHandler(TodoModel todo)
+    {
+		if (todos.Any())
+		{
+			todos.FirstOrDefault(x => x.ID == todo.ID).Completed = !todo.Completed;
+			SetTodos(todos);
+			StateHasChanged();
+		}
+	}
 }
