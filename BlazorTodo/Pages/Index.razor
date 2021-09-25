@@ -13,7 +13,7 @@
       </div>
       <div class="row">
         <div class="col">
-			<TodoList Todos="@todos" OnClick="@ClickHandler"></TodoList>
+			<TodoList Todos="@todos" OnClick="@ToggleTodoCompleted"></TodoList>
 		</div>
 			</div>
 			<div class="row p-1">
@@ -25,7 +25,7 @@
 			</div>
 			<div class="col d-inline-flex ">    
 				<button class="btn btn-primary btn-block p-2" @onclick=AddTodo>Add Todo</button>
-				<button class="btn btn-primary btn-block p-2">Clear Todo</button>
+				<button class="btn btn-primary btn-block p-2" @onclick=ClearCompletedTodos>Clear Completed Todos</button>
 			</div>
       </div>
       <div class="row">
@@ -70,7 +70,7 @@
 
     public async Task GetStoredTodos() => todos.AddRange(await localStorage.GetItemAsync<List<TodoModel>>(LOCAL_STORAGE_TODOS) ?? new List<TodoModel>());
 
-	public void ClickHandler(TodoModel todo)
+	public void ToggleTodoCompleted(TodoModel todo)
     {
 		if (todos.Any())
 		{
@@ -78,5 +78,11 @@
 			SetTodos(todos);
 			StateHasChanged();
 		}
+	}
+
+	public async Task ClearCompletedTodos() {
+		todos = todos.Where(x => x.Completed.HasValue == true && x.Completed.Value == false).ToList();
+		await SetTodos(todos);
+		StateHasChanged();
 	}
 }
